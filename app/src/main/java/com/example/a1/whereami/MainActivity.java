@@ -1,6 +1,7 @@
 package com.example.a1.whereami;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 gpsObject = gpsInfo.getLocation();
                 Toast.makeText(MainActivity.this,"lat : " + gpsObject.getLat() + "lng : " + gpsObject.getLng(),Toast.LENGTH_LONG);
+                Intent intent = new Intent(MainActivity.this,StatinListActivity.class);
+                getApplicationContext().startActivity(intent);
             }
         });
     }
