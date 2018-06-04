@@ -28,17 +28,15 @@ public class StatinListActivity extends AppCompatActivity {
         search_button = findViewById(R.id.searchbutton);
         stationNameEt = findViewById(R.id.stationName);
         recyclerView = findViewById(R.id.stationList);
-
-        setData();
         setRecyclerView();
-        Log.e("스테이션",stations.get(0).getBusstopname());
-
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stations.clear();
                 String stname = stationNameEt.getText().toString();
-                StationParsing stationParsing = new StationParsing(stname);
-                stationParsing.execute();
+                StationParsing stationParsing = new StationParsing(stname, adapter);
+                stationParsing.execute(stations);
+
             }
         });
 
@@ -51,15 +49,5 @@ public class StatinListActivity extends AppCompatActivity {
         adapter = new StatinListAdapter(this,stations);
         Log.e("카운트", String.valueOf(adapter.getItemCount()));
         recyclerView.setAdapter(adapter);
-    }
-
-    void setData(){
-        //삽입될코드
-        //테스트 코드
-        Station station = new Station(1234,4567,"47896","4568");
-        stations.add(station);
-        stations.add(station);
-        stations.add(station);
-        stations.add(station);
     }
 }
