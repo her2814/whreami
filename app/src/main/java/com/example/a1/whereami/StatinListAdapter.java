@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -34,7 +33,7 @@ public class StatinListAdapter extends RecyclerView.Adapter<StatinListAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         Station station = stations.get(position);
         holder.busstopName.setText(station.getBusstopname());
-        holder.busstopId.setText(String.valueOf(station.getBosstopId()));
+        holder.busstopId.setText(String.valueOf(station.getBosstopArsId()));
         holder.distance.setText(String.valueOf(station.getDistance()));
         holder.stoptype.setText(station.getStoptype());
     }

@@ -36,7 +36,7 @@ public class StatinListActivity extends AppCompatActivity {
                 stations.clear();
                 String stname = stationNameEt.getText().toString();
                 StationParsing stationParsing = new StationParsing(stname, adapter);
-                stationParsing.execute(stations);
+                stationParsing.searchStation(stations);
 
             }
         });

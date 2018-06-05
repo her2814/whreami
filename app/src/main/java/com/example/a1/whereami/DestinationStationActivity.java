@@ -24,7 +24,7 @@ public class DestinationStationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bus_metro_station_list);
-
+/*
         search_button = findViewById(R.id.searchbutton);
         stationNameEt = findViewById(R.id.stationName);
         recyclerView = findViewById(R.id.stationList);
@@ -43,7 +43,7 @@ public class DestinationStationActivity extends AppCompatActivity {
                 stvo.setStartStation(startStation);
 
             }
-        });
+        });*/
     }
 
     void setRecyclerView(){
