@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,13 @@ import java.util.ArrayList;
 public class StatinListAdapter extends RecyclerView.Adapter<StatinListAdapter.ViewHolder> {
     Context context;
     ArrayList<Station> stations = new ArrayList<>();
+    int stationid;
+
 
     public StatinListAdapter(Context applicationContext, ArrayList<Station> stations) {
         this.context = applicationContext;
         this.stations = stations;
+
     }
 
 
@@ -36,6 +40,7 @@ public class StatinListAdapter extends RecyclerView.Adapter<StatinListAdapter.Vi
         holder.busstopId.setText(String.valueOf(station.getBosstopArsId()));
         holder.distance.setText(String.valueOf(station.getDistance()));
         holder.stoptype.setText(station.getStoptype());
+        stationid = station.getBusstopId();
     }
 
     @Override
@@ -57,9 +62,9 @@ public class StatinListAdapter extends RecyclerView.Adapter<StatinListAdapter.Vi
             stationlinear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context,StatinListActivity.class);
-                    intent.putExtra("station",busstopName.getText().toString());
-
+                    Intent intent = new Intent(context,BusStopActivity.class);
+                    intent.putExtra("stationName",busstopName.getText().toString());
+                    intent.putExtra("stationId",String.valueOf(stationid));
                     context.startActivity(intent);
                 }
             });

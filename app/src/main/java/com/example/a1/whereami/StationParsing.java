@@ -9,28 +9,45 @@ import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class StationParsing{
     String API_KEY = "nQXBhoqZKdnFHvwi2%2Bl6JZO4garNidtHzdktRpqhjVH9GX5saW9tv5HNeSLWrSDFbAf9iXRnVIWmWToD6n1xTA%3D%3D";
     Station station;
     String station_name;
     RecyclerView.Adapter adapter;
+    ArrayList<StopBusVO> stopBusVOs;
 
     StationParsing(String station_name, RecyclerView.Adapter adapter){
         this.station_name = station_name;
         this.adapter = adapter;
     }
 
+    void assendingArray(){
+        Comparator comparator = new Comparator<StopBusVO>() {
+
+            @Override
+            public int compare(StopBusVO o1, StopBusVO o2) {
+                if(o1.getRemain_min()>o2.getRemain_min()){
+                    return 1;
+                }
+                else{
+                    return -1;
+                }
+            }
+        };
+        Collections.sort(stopBusVOs,comparator);
+    }
+
     public void searchStopBus(ArrayList<StopBusVO> stopBuss){
 
-        final ArrayList<StopBusVO> stopBusVOs = stopBuss;
+        this.stopBusVOs = stopBuss;
 
         @SuppressLint("StaticFieldLeak") AsyncTask<Void,Void,Void> asyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
@@ -50,7 +67,12 @@ public class StationParsing{
                     URL url = new URL(strurl);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-                    String arsNo = null, carNo = null, lineid = null, lineno = null, remain_min = null, remain_station = null;
+                    String arsNo = null;
+                    String carNo = null;
+                    String lineid = null;
+                    String lineno = null;
+                    int remain_min = 0;
+                    String remain_station = null;
 
                     if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                         XmlPullParser xmlPullParser = Xml.newPullParser();
@@ -91,7 +113,7 @@ public class StationParsing{
                                     lineno = text;
                                     step = STEP_NONE;
                                 } else if (step == STEP_REMAIN_MIN) {
-                                    remain_min = text;
+                                    remain_min = Integer.valueOf(text);
                                     step = STEP_NONE;
                                 } else if (step == STEP_REMAIN_STATION) {
                                     remain_station = text;
@@ -119,11 +141,10 @@ public class StationParsing{
 
             @Override
             protected void onPostExecute(Void aVoid) {
+                assendingArray();
                 adapter.notifyDataSetChanged();
                 super.onPostExecute(aVoid);
             }
-
-
         };
 
         asyncTask.execute();

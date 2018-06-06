@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".StatinListActivity" />
-        <activity android:name=".DestinationStationActivity"></activity>
+        <activity android:name=".DestinationStationActivity" />
+        <activity android:name=".BusStopActivity"></activity>
     </application>
 
 </manifest>

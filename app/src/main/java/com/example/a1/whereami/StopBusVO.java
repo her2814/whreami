@@ -5,10 +5,10 @@ public class StopBusVO {
     private String carNo;
     private String lineid;
     private String lineno;
-    private String remain_min;
+    private int remain_min;
     private String remain_station;
 
-    public StopBusVO(String arsNo, String carNo, String lineid, String lineno, String remain_min, String remain_station) {
+    public StopBusVO(String arsNo, String carNo, String lineid, String lineno, int remain_min, String remain_station) {
         this.arsNo = arsNo;
         this.carNo = carNo;
         this.lineid = lineid;
@@ -49,11 +49,11 @@ public class StopBusVO {
         this.lineno = lineno;
     }
 
-    public String getRemain_min() {
+    public int getRemain_min() {
         return remain_min;
     }
 
-    public void setRemain_min(String remain_min) {
+    public void setRemain_min(int remain_min) {
         this.remain_min = remain_min;
     }
 
