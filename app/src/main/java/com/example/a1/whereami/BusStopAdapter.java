@@ -15,7 +15,8 @@ import java.util.ArrayList;
 
 public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.ViewHolder> {
     Context context;
-    ArrayList<StopBusVO> stopBusVOs = new ArrayList<>();
+    ArrayList<StopBusVO> stopBusVOs;
+    String carno, lineid;
 
     public BusStopAdapter(Context context, ArrayList<StopBusVO> stopBusVOs) {
         this.context = context;
@@ -33,6 +34,8 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         StopBusVO stopBusVO = stopBusVOs.get(position);
+        carno = stopBusVO.getCarNo();
+        lineid = stopBusVO.getLineid();
         holder.lineNo.setText(stopBusVO.getLineno() + "번");
         holder.remain_min.setText(stopBusVO.getRemain_min() + "분");
         holder.remain_station.setText(stopBusVO.getRemain_station() + "정거장 전");
@@ -58,7 +61,8 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context,DestinationStationActivity.class);
-
+                    intent.putExtra("carno", carno);
+                    intent.putExtra("lineid",lineid);
                     context.startActivity(intent);
                 }
             });

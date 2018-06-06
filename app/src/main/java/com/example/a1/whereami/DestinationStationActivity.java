@@ -15,42 +15,31 @@ import java.util.ArrayList;
 public class DestinationStationActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    StatinListAdapter adapter;
-    EditText stationNameEt;
-    Button search_button;
-    ArrayList<Station> stations = new ArrayList<>();
+    DestinationAdapter adapter;
+    ArrayList<LineInfo> lineinfos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bus_metro_station_list);
-/*
-        search_button = findViewById(R.id.searchbutton);
-        stationNameEt = findViewById(R.id.stationName);
-        recyclerView = findViewById(R.id.stationList);
+        setContentView(R.layout.destination_layout);
+
+        recyclerView = findViewById(R.id.destinationrecycler);
         setRecyclerView();
-        search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stations.clear();
-                String stname = stationNameEt.getText().toString();
-                StationParsing stationParsing = new StationParsing(stname, adapter);
-                stationParsing.execute(stations);
+        //고려해보쇼
+        Intent intent = getIntent();
+        String carno = intent.getStringExtra("carno");
+        String lineid = intent.getStringExtra("lineid");
+        setRecyclerView();
 
-                Intent intent = new Intent();
-                String startStation = intent.getStringExtra("station");
-                StartDestinationVO stvo = StartDestinationVO.getInstance();
-                stvo.setStartStation(startStation);
-
-            }
-        });*/
+        StationParsing stationParsing = new StationParsing(lineid, adapter);
+        stationParsing.searchDestinationStop(lineinfos);
     }
 
     void setRecyclerView(){
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new StatinListAdapter(this,stations);
+        adapter = new DestinationAdapter(this,lineinfos);
         Log.e("카운트", String.valueOf(adapter.getItemCount()));
         recyclerView.setAdapter(adapter);
     }

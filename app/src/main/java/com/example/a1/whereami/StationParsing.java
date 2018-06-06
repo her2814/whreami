@@ -9,7 +9,11 @@ import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,13 +23,22 @@ import java.util.Comparator;
 
 public class StationParsing{
     String API_KEY = "nQXBhoqZKdnFHvwi2%2Bl6JZO4garNidtHzdktRpqhjVH9GX5saW9tv5HNeSLWrSDFbAf9iXRnVIWmWToD6n1xTA%3D%3D";
-    Station station;
+    String lineid;
+    String carno;
+
     String station_name;
     RecyclerView.Adapter adapter;
     ArrayList<StopBusVO> stopBusVOs;
+    ArrayList<LineInfo> lineInfos;
 
     StationParsing(String station_name, RecyclerView.Adapter adapter){
         this.station_name = station_name;
+        this.adapter = adapter;
+    }
+
+    public StationParsing(String lineid, String carno, RecyclerView.Adapter adapter) {
+        this.lineid = lineid;
+        this.carno = carno;
         this.adapter = adapter;
     }
 
@@ -81,7 +94,7 @@ public class StationParsing{
 
                         while (eventType != XmlPullParser.END_DOCUMENT) {
                             if (eventType == XmlPullParser.START_DOCUMENT) {
-                                Log.i("xml시작", "xml 파싱의 시작");
+                                Log.i("xml시작", "버스정류소 파싱의 시작");
                             } else if (eventType == XmlPullParser.START_TAG) {
                                 String startTag = xmlPullParser.getName();
 
@@ -150,6 +163,90 @@ public class StationParsing{
         asyncTask.execute();
     }
 
+    public void searchDestinationStop(final ArrayList<LineInfo> lineInfos) {
+        this.lineInfos = lineInfos;
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                final int STEP_NONE = 0;
+                final int STEP_BSTOPNAME = 1;
+                final int STEP_CARNO = 2;
+                int step = STEP_NONE;
+
+
+                String strurl = "http://61.43.246.153/openapi-data/service/busanBIMS2/busInfoRoute?lineid=" + station_name + "&serviceKey=nQXBhoqZKdnFHvwi2%2Bl6JZO4garNidtHzdktRpqhjVH9GX5saW9tv5HNeSLWrSDFbAf9iXRnVIWmWToD6n1xTA%3D%3D";
+                Log.e("라인아이디값 : ",station_name);
+                try {
+                    URL url = new URL(strurl);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    PrintWriter pr = new PrintWriter("./result.txt");
+                    String line = null;
+                    while((line=bufferedReader.readLine())!=null){
+                        pr.append(line);
+                    }*/
+                    String bsstopname = null;
+                    String station_carno = null;
+                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        XmlPullParser xmlPullParser = Xml.newPullParser();
+                        xmlPullParser.setInput(conn.getInputStream(), "UTF-8");
+                        int eventType = xmlPullParser.getEventType();
+
+                        while (eventType != XmlPullParser.END_DOCUMENT) {
+                            if (eventType == XmlPullParser.START_DOCUMENT) {
+                                Log.i("xml시작", "목적지 파싱의 시작");
+
+                            } else if (eventType == XmlPullParser.START_TAG) {
+                                String startTag = xmlPullParser.getName();
+
+                                if (startTag.equals("bstopnm")) {
+                                    step = STEP_BSTOPNAME;
+                                } else if (startTag.equals("carNo")) {
+                                    step = STEP_CARNO;
+
+                                }
+                            } else if (eventType == XmlPullParser.TEXT) {
+                                String text = xmlPullParser.getText();
+                                if (step == STEP_BSTOPNAME) {
+                                    Log.i("bstopname : ", text);
+                                    bsstopname = text;
+                                    step = STEP_NONE;
+                                } else if (step == STEP_CARNO) {
+                                    Log.i("bstopcarno : ", text);
+                                    station_carno = text;
+                                    step = STEP_NONE;
+
+                                }
+                            } else if (eventType == XmlPullParser.END_TAG) {
+                                        String endTag = xmlPullParser.getName();
+                                        if (endTag.equals("item")) {
+                                            Log.e("lineinfo : ",station_carno + " , "+ bsstopname);
+                                            lineInfos.add(new LineInfo(station_carno, bsstopname));
+                                            station_carno= null;
+                                        }
+                                    }
+                            eventType = xmlPullParser.next();
+                        }
+                        }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (XmlPullParserException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                adapter.notifyDataSetChanged();
+                super.onPostExecute(aVoid);
+            }
+        };
+
+        asyncTask.execute();
+    }
 
 
     public void searchStation(ArrayList<Station> stations) {
@@ -183,7 +280,7 @@ public class StationParsing{
 
                         while (eventType != XmlPullParser.END_DOCUMENT) {
                             if (eventType == XmlPullParser.START_DOCUMENT) {
-                                Log.i("xml시작", "xml 파싱의 시작");
+                                Log.i("xml시작", "시작지 파싱의 시작");
                             } else if (eventType == XmlPullParser.START_TAG) {
                                 String startTag = xmlPullParser.getName();
 

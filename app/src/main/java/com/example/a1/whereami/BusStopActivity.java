@@ -28,29 +28,20 @@ public class BusStopActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.reamin_bus_recycler);
         busstopName = findViewById(R.id.busstopName);
         Intent intent = getIntent();
-        setRecyclerView();
+
         String stationid =intent.getExtras().getString("stationId");
         String stationName = intent.getExtras().getString("stationName");
 
         Log.i("stationId 는:", stationid);
         Log.i("stationName 는 ", stationName);
         busstopName.setText(stationName);
-
+        setRecyclerView();
         StationParsing stationParsing = new StationParsing(stationid,adapter);
         stationParsing.searchStopBus(stopBusVOs);
 
-
     }
 
-    /*void assendingArray(){
-        Comparator comparator = new Comparator<StopBusVO>() {
-            @Override
-            public int compare(StopBusVO o1, StopBusVO o2) {
-                return o1.getRemain_min().compareTo(o2.getRemain_min());
-            }
-        };
-        Collections.sort(stopBusVOs,comparator);
-    }*/
+
 
     void setRecyclerView(){
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);

@@ -65,6 +65,8 @@ public class StatinListAdapter extends RecyclerView.Adapter<StatinListAdapter.Vi
                     Intent intent = new Intent(context,BusStopActivity.class);
                     intent.putExtra("stationName",busstopName.getText().toString());
                     intent.putExtra("stationId",String.valueOf(stationid));
+                    StartDestinationVO startDestinationVO = StartDestinationVO.getInstance();
+                    startDestinationVO.setStartStation(busstopName.getText().toString());
                     context.startActivity(intent);
                 }
             });
