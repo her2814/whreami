@@ -22,9 +22,10 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class StationParsing{
+    StartDestinationVO startDestinationVO = StartDestinationVO.getInstance();
     String API_KEY = "nQXBhoqZKdnFHvwi2%2Bl6JZO4garNidtHzdktRpqhjVH9GX5saW9tv5HNeSLWrSDFbAf9iXRnVIWmWToD6n1xTA%3D%3D";
     String lineid;
-    String carno;
+    String select_carno;
 
     String station_name;
     RecyclerView.Adapter adapter;
@@ -38,7 +39,7 @@ public class StationParsing{
 
     public StationParsing(String lineid, String carno, RecyclerView.Adapter adapter) {
         this.lineid = lineid;
-        this.carno = carno;
+        this.select_carno = carno;
         this.adapter = adapter;
     }
 
@@ -163,6 +164,93 @@ public class StationParsing{
         asyncTask.execute();
     }
 
+    public void monitorStation(){
+
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                final int STEP_NONE = 0;
+                final int STEP_BSTOPNAME = 1;
+                final int STEP_CARNO = 2;
+                int step = STEP_NONE;
+
+                String strurl = "http://61.43.246.153/openapi-data/service/busanBIMS2/busInfoRoute?lineid=" + lineid + "&serviceKey=nQXBhoqZKdnFHvwi2%2Bl6JZO4garNidtHzdktRpqhjVH9GX5saW9tv5HNeSLWrSDFbAf9iXRnVIWmWToD6n1xTA%3D%3D";
+                Log.e("라인아이디값 : ",lineid);
+                try {
+                    URL url = new URL(strurl);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+                    String bsstopname = null;
+                    String station_carno = null;
+                    String nextStation = null;
+                    boolean isFindNowStation = false;
+
+                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        XmlPullParser xmlPullParser = Xml.newPullParser();
+                        xmlPullParser.setInput(conn.getInputStream(), "UTF-8");
+                        int eventType = xmlPullParser.getEventType();
+
+                        while (eventType != XmlPullParser.END_DOCUMENT) {
+                            if (eventType == XmlPullParser.START_DOCUMENT) {
+                                Log.i("xml시작", "모니터링의 시작");
+
+                            } else if (eventType == XmlPullParser.START_TAG) {
+                                String startTag = xmlPullParser.getName();
+                                if (startTag.equals("bstopnm")) {
+                                    step = STEP_BSTOPNAME;
+                                } else if (startTag.equals("carNo")) {
+                                    step = STEP_CARNO;
+                                }
+                            } else if (eventType == XmlPullParser.TEXT) {
+                                String text = xmlPullParser.getText();
+                                if (step == STEP_BSTOPNAME) {
+                                    Log.i("bstopname : ", text);
+                                    bsstopname = text;
+                                    if(isFindNowStation){
+                                        nextStation = text;
+                                        startDestinationVO.setNextStation(nextStation);
+                                    }
+                                    step = STEP_NONE;
+                                } else if (step == STEP_CARNO) {
+                                    Log.i("bstopcarno : ", text);
+                                    station_carno = text;
+                                    if(select_carno.equals(station_carno.substring(4))){
+                                        startDestinationVO.setStartStation(bsstopname);
+                                        isFindNowStation = true;
+                                    }
+                                    step = STEP_NONE;
+                                }
+                            } else if (eventType == XmlPullParser.END_TAG) {
+                                String endTag = xmlPullParser.getName();
+                                if (endTag.equals("item")) {
+                                    Log.e("lineinfo : ",station_carno + " , "+ bsstopname);
+                                    lineInfos.add(new LineInfo(station_carno, bsstopname));
+                                    station_carno= null;
+                                }
+                            }
+                            eventType = xmlPullParser.next();
+                        }
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (XmlPullParserException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                adapter.notifyDataSetChanged();
+                super.onPostExecute(aVoid);
+            }
+        };
+
+        asyncTask.execute();
+    }
+
     public void searchDestinationStop(final ArrayList<LineInfo> lineInfos) {
         this.lineInfos = lineInfos;
         @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
@@ -179,12 +267,7 @@ public class StationParsing{
                 try {
                     URL url = new URL(strurl);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    PrintWriter pr = new PrintWriter("./result.txt");
-                    String line = null;
-                    while((line=bufferedReader.readLine())!=null){
-                        pr.append(line);
-                    }*/
+
                     String bsstopname = null;
                     String station_carno = null;
                     if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {

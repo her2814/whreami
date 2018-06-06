@@ -22,7 +22,8 @@
         </activity>
         <activity android:name=".StatinListActivity" />
         <activity android:name=".DestinationStationActivity" />
-        <activity android:name=".BusStopActivity"></activity>
+        <activity android:name=".BusStopActivity" />
+        <activity android:name=".NowNextStationActivity"></activity>
     </application>
 
 </manifest>

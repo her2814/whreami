@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,12 @@ import java.util.ArrayList;
 public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.ViewHolder> {
     Context context;
     ArrayList<LineInfo> lineinfos;
+    String selectCarNo;
 
-    public DestinationAdapter(Context context, ArrayList<LineInfo> lineinfos) {
+    public DestinationAdapter(Context context, ArrayList<LineInfo> lineinfos, String carno) {
         this.context = context;
         this.lineinfos = lineinfos;
+        this.selectCarNo = carno;
     }
 
     @NonNull
@@ -65,6 +68,8 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
                     StartDestinationVO startDestinationVO = StartDestinationVO.getInstance();
                     startDestinationVO.setDestinationStation(stationNM.getText().toString());
                     Intent intent = new Intent(context.getApplicationContext(),MainActivity.class);
+                    intent.putExtra("carno",selectCarNo);
+                    Log.i("선택된 차량번호 : ",selectCarNo);
                     context.startActivity(intent);
                 }
             });

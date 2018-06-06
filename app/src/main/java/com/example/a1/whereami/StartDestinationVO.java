@@ -4,10 +4,19 @@ public class StartDestinationVO {
     private static StartDestinationVO startDestinationVO = new StartDestinationVO();
     private String startStation;
     private String DestinationStation;
+    private String nextStation;
 
 
     static public StartDestinationVO getInstance(){
         return startDestinationVO;
+    }
+
+    public String getNextStation() {
+        return nextStation;
+    }
+
+    public void setNextStation(String nextStation) {
+        this.nextStation = nextStation;
     }
 
     private StartDestinationVO() {

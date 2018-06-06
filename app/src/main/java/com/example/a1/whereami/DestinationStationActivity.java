@@ -17,6 +17,7 @@ public class DestinationStationActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     DestinationAdapter adapter;
     ArrayList<LineInfo> lineinfos = new ArrayList<>();
+    String carno;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +26,9 @@ public class DestinationStationActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.destinationrecycler);
         setRecyclerView();
-        //고려해보쇼
+
         Intent intent = getIntent();
-        String carno = intent.getStringExtra("carno");
+        carno = intent.getStringExtra("carno");
         String lineid = intent.getStringExtra("lineid");
         setRecyclerView();
 
@@ -39,7 +40,7 @@ public class DestinationStationActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new DestinationAdapter(this,lineinfos);
+        adapter = new DestinationAdapter(this,lineinfos,carno);
         Log.e("카운트", String.valueOf(adapter.getItemCount()));
         recyclerView.setAdapter(adapter);
     }
