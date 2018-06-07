@@ -1,6 +1,9 @@
 package com.example.a1.whereami;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -8,6 +11,8 @@ import android.widget.TextView;
 public class NowNextStationActivity extends AppCompatActivity {
     TextView nowStation, nextStation ;
     String carno;
+    private BroadcastReceiver broadcastReceiver= null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,7 +23,46 @@ public class NowNextStationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         carno = intent.getStringExtra("carno");
 
+        intent = new Intent(this,MoniterStationService.class);
+        this.startService(intent);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver();
+    }
+
+    private void registerReceiver(){
+        if(broadcastReceiver != null) return;
+
+        final IntentFilter theFilter = new IntentFilter();
+        theFilter.addAction("changeStation");
+
+        this.broadcastReceiver = new BroadcastReceiver() {
+            StartDestinationVO startDestinationVO = StartDestinationVO.getInstance();
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getAction().equals("changeStation")){
+                    nowStation.setText(startDestinationVO.getStartStation());
+                    nextStation.setText(startDestinationVO.getNextStation());
+                }
+            }
+        };
+        this.registerReceiver(this.broadcastReceiver,theFilter);
+    }
+
+    private void unregisterReceiver(){
+        if(broadcastReceiver!=null){
+            this.unregisterReceiver();
+            broadcastReceiver = null;
+        }
     }
 }

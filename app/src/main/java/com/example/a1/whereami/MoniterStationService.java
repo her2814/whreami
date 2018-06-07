@@ -49,6 +49,8 @@ public class MoniterStationService extends Service {
                     String bsstopname = null;
                     String station_carno = null;
                     String nextStation = null;
+                    String nowstationTemp = startDestinationVO.getStartStation();
+
                     boolean isFindNowStation = false;
 
                     if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -80,7 +82,7 @@ public class MoniterStationService extends Service {
                                 } else if (step == STEP_CARNO) {
                                     Log.i("bstopcarno : ", text);
                                     station_carno = text;
-                                    if(carno.equals(station_carno.substring(4))){
+                                    if(carno.equals(station_carno.substring(3))){
                                         startDestinationVO.setStartStation(bsstopname);
                                         isFindNowStation = true;
                                     }
@@ -90,6 +92,10 @@ public class MoniterStationService extends Service {
                             eventType = xmlPullParser.next();
                         }
                     }
+
+                    if(!nowstationTemp.equals(bsstopname)){
+                        sendBroadcast(new Intent("changeStation"));
+                    }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -98,6 +104,7 @@ public class MoniterStationService extends Service {
                     e.printStackTrace();
                 }
                 return null;
+
             }
 
             @Override

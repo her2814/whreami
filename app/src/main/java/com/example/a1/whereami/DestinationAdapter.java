@@ -41,6 +41,9 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
         if(lineinfos.get(position).getCarno()!=null) {
             holder.carno.setText(lineinfos.get(position).getCarno());
             holder.busimage.setVisibility(View.VISIBLE);
+            if(selectCarNo.equals(lineinfos.get(position).getCarno().substring(3))){
+                holder.busimage.setColorFilter(R.color.colorPrimary);
+            }
         }
     }
 
@@ -67,9 +70,8 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
                 public void onClick(View v) {
                     StartDestinationVO startDestinationVO = StartDestinationVO.getInstance();
                     startDestinationVO.setDestinationStation(stationNM.getText().toString());
-                    Intent intent = new Intent(context.getApplicationContext(),MainActivity.class);
+                    Intent intent = new Intent(context.getApplicationContext(),NowNextStationActivity.class);
                     intent.putExtra("carno",selectCarNo);
-                    Log.i("선택된 차량번호 : ",selectCarNo);
                     context.startActivity(intent);
                 }
             });
