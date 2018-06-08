@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 public class NowNextStationActivity extends AppCompatActivity {
@@ -22,6 +23,12 @@ public class NowNextStationActivity extends AppCompatActivity {
         nextStation = findViewById(R.id.nextstation);
         Intent intent = getIntent();
         carno = intent.getStringExtra("carno");
+        StartDestinationVO startDestinationVO = StartDestinationVO.getInstance();
+        String nextStation = startDestinationVO.getNextStation();
+        String startsation = startDestinationVO.getStartStation();
+        String destinationstation = startDestinationVO.getDestinationStation();
+
+        Log.i("원하는 정보 : ", "carno : " + carno + "" + "nextStation" + nextStation + "startstation" + startsation + "destination" + destinationstation);
 
         intent = new Intent(this,MoniterStationService.class);
         this.startService(intent);
@@ -31,12 +38,14 @@ public class NowNextStationActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver();
+        Log.e("프로바이더 호출","프로바이더 생성");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver();
+        Log.e("프로바이더 호출","프로바이더 제거");
     }
 
     private void registerReceiver(){
