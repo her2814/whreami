@@ -99,8 +99,12 @@ public class NowNextStationActivity extends AppCompatActivity {
 
     private void unregisterReceiver(){
         if(broadcastReceiver!=null){
-            this.unregisterReceiver();
             broadcastReceiver = null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

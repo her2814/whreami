@@ -2,6 +2,7 @@ package com.example.a1.whereami;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
     ArrayList<LineInfo> lineinfos;
     String selectCarNo;
     String lineid;
+    StartDestinationVO startDestinationVO = StartDestinationVO.getInstance();
 
     public DestinationAdapter(Context context, ArrayList<LineInfo> lineinfos, String carno, String lineid) {
         this.context = context;
@@ -40,11 +42,19 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
         holder.stationNM.setText(lineinfos.get(position).getBstopnm());
         holder.carno.setText("");
         holder.busimage.setVisibility(View.INVISIBLE);
+        holder.destinationLinear.setBackgroundColor(Color.WHITE);
         if(lineinfos.get(position).getCarno()!=null) {
             holder.carno.setText(lineinfos.get(position).getCarno());
             holder.busimage.setVisibility(View.VISIBLE);
+
             if(selectCarNo.equals(lineinfos.get(position).getCarno().substring(3))){
-                holder.busimage.setColorFilter(R.color.colorPrimary);
+                Log.e("선택된 차넘버 : ",selectCarNo);
+                Log.e("linefos.getCarno : ", lineinfos.get(position).getCarno() + "." + (lineinfos.get(position).getCarno().substring(3)));
+                holder.destinationLinear.setBackgroundColor(Color.GRAY);
+            }
+            if(startDestinationVO.getStartStation().equals(lineinfos.get(position).getBstopnm())){
+                Log.e("실행됨","실행완료");
+                holder.destinationLinear.setBackgroundColor(Color.MAGENTA);
             }
         }
     }
