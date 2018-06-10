@@ -20,16 +20,11 @@ import java.net.URL;
 
 public class MoniterStationService extends Service {
 
-    private IBinder mIBinder = new Binder(){
-        MoniterStationService getService(){
-            return MoniterStationService.this;
-        }
-    };
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return mIBinder;
+        return null;
     }
 
     @Override
@@ -85,6 +80,8 @@ public class MoniterStationService extends Service {
                                         bsstopname = text;
                                         if (isFindNowStation) {
                                             nextStation = text;
+                                            isFindNowStation = false;
+                                            Log.e("nextStation",text);
                                             startDestinationVO.setNextStation(nextStation);
                                         }
                                         step = STEP_NONE;
@@ -115,13 +112,13 @@ public class MoniterStationService extends Service {
                         e.printStackTrace();
                     }
                     try {
-                        Thread.sleep(60000);
+                        Thread.sleep(30000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
-
             }
+
+           }
 
             @Override
             protected void onPostExecute(Void aVoid) {

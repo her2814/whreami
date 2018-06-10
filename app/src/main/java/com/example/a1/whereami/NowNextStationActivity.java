@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class NowNextStationActivity extends AppCompatActivity {
     TextView nowStation, nextStation ;
+    String lineid;
     String carno;
     private BroadcastReceiver broadcastReceiver= null;
 
@@ -23,14 +24,20 @@ public class NowNextStationActivity extends AppCompatActivity {
         nextStation = findViewById(R.id.nextstation);
         Intent intent = getIntent();
         carno = intent.getStringExtra("carno");
+        lineid = intent.getStringExtra("lineid");
         StartDestinationVO startDestinationVO = StartDestinationVO.getInstance();
-        String nextStation = startDestinationVO.getNextStation();
+        String nextstation = startDestinationVO.getNextStation();
         String startsation = startDestinationVO.getStartStation();
         String destinationstation = startDestinationVO.getDestinationStation();
+
+        nowStation.setText(startsation);
+        nextStation.setText(nextstation);
 
         Log.i("원하는 정보 : ", "carno : " + carno + "" + "nextStation" + nextStation + "startstation" + startsation + "destination" + destinationstation);
 
         intent = new Intent(this,MoniterStationService.class);
+        intent.putExtra("lineid",lineid);
+        intent.putExtra("carno",carno);
         this.startService(intent);
     }
 

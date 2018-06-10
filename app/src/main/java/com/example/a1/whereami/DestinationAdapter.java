@@ -19,11 +19,13 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
     Context context;
     ArrayList<LineInfo> lineinfos;
     String selectCarNo;
+    String lineid;
 
-    public DestinationAdapter(Context context, ArrayList<LineInfo> lineinfos, String carno) {
+    public DestinationAdapter(Context context, ArrayList<LineInfo> lineinfos, String carno, String lineid) {
         this.context = context;
         this.lineinfos = lineinfos;
         this.selectCarNo = carno;
+        this.lineid=lineid;
     }
 
     @NonNull
@@ -72,6 +74,7 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
                     startDestinationVO.setDestinationStation(stationNM.getText().toString());
                     Intent intent = new Intent(context.getApplicationContext(),NowNextStationActivity.class);
                     intent.putExtra("carno",selectCarNo);
+                    intent.putExtra("lineid",lineid);
                     context.startActivity(intent);
                 }
             });
