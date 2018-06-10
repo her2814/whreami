@@ -41,11 +41,14 @@ public class MoniterStationService extends Service {
                 final int STEP_BSTOPNAME = 1;
                 final int STEP_CARNO = 2;
                 int step = STEP_NONE;
+                boolean countCheck = false;
+                int count = 0;
 
                 String strurl = "http://61.43.246.153/openapi-data/service/busanBIMS2/busInfoRoute?lineid=" + lineid + "&serviceKey=nQXBhoqZKdnFHvwi2%2Bl6JZO4garNidtHzdktRpqhjVH9GX5saW9tv5HNeSLWrSDFbAf9iXRnVIWmWToD6n1xTA%3D%3D";
                 Log.e("라인아이디값 : ",lineid);
                 while(true) {
                     try {
+                        count = 0;
                         URL url = new URL(strurl);
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -84,6 +87,12 @@ public class MoniterStationService extends Service {
                                             Log.e("nextStation",text);
                                             startDestinationVO.setNextStation(nextStation);
                                         }
+                                        if(countCheck){
+                                            count++;
+                                            if(startDestinationVO.getDestinationStation().equals(bsstopname)){
+                                                countCheck =false;
+                                            }
+                                        }
                                         step = STEP_NONE;
                                     } else if (step == STEP_CARNO) {
                                         Log.i("버스번호 : ", text);
@@ -92,6 +101,7 @@ public class MoniterStationService extends Service {
                                             startDestinationVO.setStartStation(bsstopname);
                                             selectedStation = bsstopname;
                                             isFindNowStation = true;
+                                            countCheck = true;
                                         }
                                         step = STEP_NONE;
                                     }
@@ -102,7 +112,10 @@ public class MoniterStationService extends Service {
 
                         if (!nowstationTemp.equals(selectedStation)) {
                             Log.e("정류장의 갱신","정류장갱신 브로드캐스트~!");
-                            sendBroadcast(new Intent("changeStation"));
+                            Intent intent = new Intent();
+                            intent.setAction("changeStation");
+                            intent.putExtra("count",count);
+                            sendBroadcast(intent);
                         }
                     } catch (MalformedURLException e) {
                         e.printStackTrace();

@@ -4,13 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NowNextStationActivity extends AppCompatActivity {
-    TextView nowStation, nextStation ;
+    TextView nowStation, nextStation, destinationStation,countText ;
     String lineid;
     String carno;
     private BroadcastReceiver broadcastReceiver= null;
@@ -22,6 +24,9 @@ public class NowNextStationActivity extends AppCompatActivity {
 
         nowStation = findViewById(R.id.nowstation);
         nextStation = findViewById(R.id.nextstation);
+        destinationStation = findViewById(R.id.destinationstation);
+        countText = findViewById(R.id.count);
+
         Intent intent = getIntent();
         carno = intent.getStringExtra("carno");
         lineid = intent.getStringExtra("lineid");
@@ -30,8 +35,10 @@ public class NowNextStationActivity extends AppCompatActivity {
         String startsation = startDestinationVO.getStartStation();
         String destinationstation = startDestinationVO.getDestinationStation();
 
+
         nowStation.setText(startsation);
         nextStation.setText(nextstation);
+        destinationStation.setText(destinationstation);
 
         Log.i("원하는 정보 : ", "carno : " + carno + "" + "nextStation" + nextStation + "startstation" + startsation + "destination" + destinationstation);
 
@@ -66,9 +73,24 @@ public class NowNextStationActivity extends AppCompatActivity {
 
             @Override
             public void onReceive(Context context, Intent intent) {
+                int count = intent.getIntExtra("count",0);
+
                 if(intent.getAction().equals("changeStation")){
                     nowStation.setText(startDestinationVO.getStartStation());
                     nextStation.setText(startDestinationVO.getNextStation());
+                    countText.setText(count + "정류장 전");
+                }
+                if(startDestinationVO.getNextStation().equals(startDestinationVO.getDestinationStation())){
+                    Vibrator vibrator;
+                    vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    vibrator.vibrate(2000);
+                    Toast.makeText(context, "목적지 도착 한 정거장 전입니다.", Toast.LENGTH_SHORT).show();
+                }
+                if(startDestinationVO.getDestinationStation().equals(startDestinationVO.getStartStation())){
+                    Vibrator vibrator;
+                    vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    vibrator.vibrate(2000);
+                    Toast.makeText(context, "목적지에 도착했습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
         };
