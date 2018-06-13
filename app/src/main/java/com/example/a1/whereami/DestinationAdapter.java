@@ -42,6 +42,7 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
         holder.stationNM.setText(lineinfos.get(position).getBstopnm());
         holder.carno.setText("");
         holder.busimage.setVisibility(View.INVISIBLE);
+        holder.busimage.setImageResource(R.drawable.bus);
         holder.destinationLinear.setBackgroundColor(Color.WHITE);
         if(lineinfos.get(position).getCarno()!=null) {
             holder.carno.setText(lineinfos.get(position).getCarno());
@@ -50,11 +51,12 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
             if(selectCarNo.equals(lineinfos.get(position).getCarno().substring(3))){
                 Log.e("선택된 차넘버 : ",selectCarNo);
                 Log.e("linefos.getCarno : ", lineinfos.get(position).getCarno() + "." + (lineinfos.get(position).getCarno().substring(3)));
-                holder.destinationLinear.setBackgroundColor(Color.GRAY);
+                holder.busimage.setImageResource(R.drawable.selectbus);
             }
             if(startDestinationVO.getStartStation().equals(lineinfos.get(position).getBstopnm())){
                 Log.e("실행됨","실행완료");
-                holder.destinationLinear.setBackgroundColor(Color.MAGENTA);
+                holder.destinationLinear.setBackgroundColor(Color.GRAY);
+                holder.destinationLinear.requestFocus();
             }
         }
     }

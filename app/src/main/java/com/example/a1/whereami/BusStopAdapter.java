@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,7 @@ public class BusStopAdapter extends RecyclerView.Adapter<BusStopAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView lineNo, remain_min, remain_station;
-        LinearLayout busstoplinear;
+        CardView busstoplinear;
 
         public ViewHolder(View itemView) {
             super(itemView);

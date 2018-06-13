@@ -38,7 +38,7 @@ public class StatinListAdapter extends RecyclerView.Adapter<StatinListAdapter.Vi
         Station station = stations.get(position);
         holder.busstopName.setText(station.getBusstopname());
         holder.busstopId.setText(String.valueOf(station.getBosstopArsId()));
-        holder.distance.setText(String.valueOf(station.getDistance()));
+        holder.distance.setText(String.valueOf(station.getDistance()) + "M");
         holder.stoptype.setText(station.getStoptype());
         stationid = station.getBusstopId();
     }

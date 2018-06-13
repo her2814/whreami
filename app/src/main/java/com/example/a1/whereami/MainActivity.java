@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -56,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Animation anim = AnimationUtils.loadAnimation(MainActivity.this,R.anim.thansmaller);
+                anim.setDuration(1000);
+                v.startAnimation(anim);
                 gpsObject = gpsInfo.getLocation();
                 Toast.makeText(MainActivity.this,"lat : " + gpsObject.getLat() + "lng : " + gpsObject.getLng(),Toast.LENGTH_LONG);
                 Intent intent = new Intent(MainActivity.this,StatinListActivity.class);

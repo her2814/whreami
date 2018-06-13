@@ -1,6 +1,7 @@
 package com.example.a1.whereami;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,7 +25,8 @@ public class BusStopActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bus_stop_activity_layout);
-
+        Drawable alpha = findViewById(R.id.bus_metro_layout_background).getBackground();
+        alpha.setAlpha(50);
         recyclerView = findViewById(R.id.reamin_bus_recycler);
         busstopName = findViewById(R.id.busstopName);
         Intent intent = getIntent();
